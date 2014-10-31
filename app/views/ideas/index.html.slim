@@ -1,0 +1,15 @@
+
+- @ideas.each do |idea|
+  .well id=dom_id(idea)
+    h3= link_to idea.title, idea
+    h5= idea.description
+
+    span By: 
+    span= idea.user.name
+
+    - if (current_user.id != idea.user.id)? && user_signed_in?
+      - if (idea.member.find_by_user_id current_user).nil?
+        = link_to "Join", idea_members_path(idea), method: :post
+      - else
+        = link_to "Leave", idea_member_path(idea, (idea.member.find_by_user_id current_user)), method: :delete
+
