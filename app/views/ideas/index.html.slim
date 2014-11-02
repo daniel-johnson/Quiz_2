@@ -1,15 +1,49 @@
+.well
+  h1 Welcome to Ideas
+  h4 You can browse the ideas below. Please sign in to submit, join, like, or discuss an idea. 
+  button.btn.btn-primary.btn-lg data-target="#myModal" data-toggle="modal" type="button"
+    | New Idea
+
+  #myModal.modal.fade aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" 
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close data-dismiss="modal" type="button" 
+            span aria-hidden="true"  &times;
+            span.sr-only Close
+          h4#myModalLabel.modal-title New Idea
+        .modal-body
+          = render "form"
+
 
 - @ideas.each do |idea|
   .well id=dom_id(idea)
-    h3= link_to idea.title, idea
-    h5= idea.description
+    .container-fluid
+      .col-md-9
+        h3= link_to idea.title, idea
+        h5= idea.description
+        - if user_signed_in? && (current_user == idea.user)
+          = link_to "Delete Idea", idea, method: :delete
+        br
 
-    span By: 
-    span= idea.user.name
+        | By: #{idea.user.name} - Members: #{idea.members.count} - Likes: #{idea.likes.count}
 
-    - if (current_user.id != idea.user.id)? && user_signed_in?
-      - if (idea.member.find_by_user_id current_user).nil?
-        = link_to "Join", idea_members_path(idea), method: :post
-      - else
-        = link_to "Leave", idea_member_path(idea, (idea.member.find_by_user_id current_user)), method: :delete
+        - if (current_user != idea.user) && user_signed_in?
+          |  | 
+          - if idea.members.find_by_user_id(current_user).nil?
+            = link_to "Join Project", idea_members_path(idea), method: :post
+          - else
+            = link_to "Leave Project", idea_member_path(idea, (idea.members.find_by_user_id(current_user))), method: :delete
+          |  | 
+          -if idea.likes.find_by_user_id(current_user).nil?
+            = link_to "Like Project", idea_likes_path(idea), method: :post
+          - else
+            = link_to "unLike Project", idea_like_path(idea, (idea.likes.find_by_user_id(current_user))), method: :delete
+
+      - if idea.picture?
+        .col-md-3
+          = image_tag idea.picture.url, class: "img-thumbnail"
+
+
+    
 

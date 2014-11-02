@@ -4,11 +4,12 @@ class IdeasController < ApplicationController
 
   def index
     @ideas = Idea.all
+    @idea = Idea.new
   end
 
   def show
     @comment = Comment.new
-    @member = @idea.member.find_by_user_id current_user if user_signed_in?
+    @member = @idea.members.find_by_user_id current_user if user_signed_in?
   end
 
   def new
@@ -28,6 +29,14 @@ class IdeasController < ApplicationController
     end
   end
 
+  def destroy
+    if @idea.destroy
+      redirect_to root_path, notice: "Idea deleted"
+    else 
+      redirect_to root_path, alert: "Idea not deleted"
+    end
+  end
+
 
   private
 
@@ -36,7 +45,7 @@ class IdeasController < ApplicationController
   end
 
   def idea_params
-    params.require(:idea).permit(:title, :description)
+    params.require(:idea).permit(:title, :description, :picture)
   end
 
 

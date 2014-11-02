@@ -27,6 +27,9 @@ gem 'slim'
 gem 'font-awesome-rails'
 gem 'bootstrap-sass', '~> 3.2.0'
 gem 'sass-rails', '>= 3.2'
+gem 'carrierwave'
+gem "mini_magick", "~> 4.0.0.rc"
+
 
 group :development do
   gem 'hirb'

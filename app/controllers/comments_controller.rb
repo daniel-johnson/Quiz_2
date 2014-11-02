@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
-
+  before_action :authenticate_user!
+  
   def create
     @idea = Idea.find params[:idea_id]
     @comment = Comment.new comment_params

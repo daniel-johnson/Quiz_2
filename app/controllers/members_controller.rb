@@ -6,18 +6,18 @@ class MembersController < ApplicationController
     @member = @idea.members.new
     @member.user = current_user
     if @member.save
-      redirect_to @idea, notice: "Joined this idea!"
+      redirect_to :back, notice: "Joined this idea!"
     else
-      redirect_to @idea, alert: "You can't join this idea."
+      redirect_to :back, alert: "You can't join this idea."
     end
   end
 
   def destroy
     @member = current_user.members.find_by_id params[:id]
     if @member && @member.destroy
-      redirect_to @idea, notice: "You have left this idea."
+      redirect_to :back, notice: "You have left this idea."
     else
-      redirect_to @idea, alert: "You have not left this idea."
+      redirect_to :back, alert: "You have not left this idea."
     end
   end
 

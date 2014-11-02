@@ -1,13 +1,34 @@
-h1= @idea.title
+.row
+  .col-md-9
+    h1= @idea.title
 
-h3= @idea.description
+    h3= @idea.description
 
-br
-hr
-br
+    - if (current_user != @idea.user) && user_signed_in?
+      - if @idea.members.find_by_user_id(current_user).nil?
+        = link_to "Join Project",   idea_members_path(@idea), method: :post
+      - else
+        = link_to "Leave Project", idea_member_path(@idea, (@idea.members.find_by_user_id(current_user))), method: :delete
+      |  | 
+      -if @idea.likes.find_by_user_id(current_user).nil?
+        = link_to "Like Project", idea_likes_path(@idea), method: :post
+      - else
+        = link_to "unLike Project", idea_like_path(@idea, (@idea.likes.find_by_user_id(current_user))), method: :delete
+    br
+    br
+    H5 Created by: #{@idea.user.name}
+    H5 Project Members: #{@idea.members.each.count}
+    ul
+      - @idea.members.each do |member|
+        li= member.user.name
+
+
+  .com-md-3
+    = image_tag @idea.picture.url, class: "img-thumbnail"
+
 
 - if user_signed_in?
-
+  br
   .well
     h3 New Comment
     - if @comment.errors.any?
@@ -19,14 +40,15 @@ br
       .form-group
         = f.text_area :body, rows: 3, class: "form-control"
       = f.submit class: "btn btn-primary"
-  
-  br
-  hr
-  br
 
-.well
-  - @idea.comments.each do |comment|
-    h4 = comment.body
-    p = "by: #{comment.user.name}"
+br  
+
+- unless @idea.comments.empty?
+  .well
+    h3 Comments
     hr
+    - @idea.comments.each do |comment|
+      h4 = comment.body
+      p = "by: #{comment.user.name}"
+      hr
 
